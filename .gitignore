@@ -1,0 +1,12 @@
+# IDEs
+.idea
+.vscode
+
+# Python files
+venv/
+
+# Caches
+**/**/__pycache__/
+**/__pycache__/
+**/.pytest_cache/
+src/__init__.pyc
