@@ -24,7 +24,7 @@ from . import host_tracker
 log = core.getLogger()
 import logging
 log.setLevel(logging.INFO)
-from pox.lib.addresses import EthAddr
+
 
 def launch (src_mac = None, no_flow = False, **kw):
   for k, v in kw.items():
@@ -37,4 +37,4 @@ def launch (src_mac = None, no_flow = False, **kw):
     else:
       log.error("Unknown option: %s(=%s)",k,v)
   core.registerNew(host_tracker.host_tracker, ping_src_mac = src_mac,
-      install_flow = not no_flow)
+                   install_flow = not no_flow)

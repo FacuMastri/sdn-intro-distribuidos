@@ -22,7 +22,7 @@ import sys
 import unittest
 
 sys.path.append(os.path.join(os.path.dirname(__file__),
-    *itertools.repeat("..", 3)))
+                             *itertools.repeat("..", 3)))
 
 from pox.lib.mock_socket import MockSocket
 from pox.lib.ioworker import IOWorker, RecocoIOLoop

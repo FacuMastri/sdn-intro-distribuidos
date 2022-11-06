@@ -40,7 +40,7 @@ fi
 exec python $OPT "$0" $FLG "$@"
 '''
 
-from pox.boot import boot
+from pox.pox import boot
 
 if __name__ == '__main__':
   boot()

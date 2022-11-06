@@ -30,7 +30,7 @@ import stat
 from string import Template
 
 SCRIPT_DIR=path.dirname(path.abspath(sys.modules['__main__'].__file__))
-ROOT=path.abspath(path.join(SCRIPT_DIR,".."))
+ROOT=path.abspath(path.join(SCRIPT_DIR, ".."))
 UNIT_TEST=path.join(ROOT, "tests/unit")
 
 parser = OptionParser(

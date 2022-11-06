@@ -22,7 +22,7 @@ import os
 
 import unittest
 SCRIPT_DIR=path.dirname(path.abspath(__file__))
-ROOT=path.abspath(path.join(SCRIPT_DIR,"../.."))
+ROOT=path.abspath(path.join(SCRIPT_DIR, "../.."))
 sys.path.append(os.path.dirname(__file__) + "/../..")
 
 packages = {}

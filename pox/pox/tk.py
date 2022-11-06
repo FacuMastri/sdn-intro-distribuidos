@@ -27,8 +27,6 @@ log = core.getLogger()
 
 class MessageBoxer (object):
   def __init__ (self, tk):
-    import tkinter.messagebox, tkinter.colorchooser, tkinter.simpledialog
-    import tkinter.filedialog
     fields = "ERROR INFO QUESTION WARNING ABORTRETRYIGNORE OKCANCEL "
     fields += "RETRYCANCEL YESNO YESNOCANCEL ABORT RETRY IGNORE OK "
     fields += "CANCEL YES NO"

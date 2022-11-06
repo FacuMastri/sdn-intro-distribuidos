@@ -47,7 +47,7 @@ port called eth1 which isn't connected to anything.
 
 from pox.core import core
 from pox.datapaths import do_launch
-from pox.datapaths.switch import SoftwareSwitchBase, OFConnection
+from pox.datapaths.switch import SoftwareSwitchBase
 from pox.datapaths.switch import ExpireMixin
 import pox.lib.pxpcap as pxpcap
 from queue import Queue

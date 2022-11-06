@@ -2287,7 +2287,7 @@ def cli():
         scriptdir = os.path.dirname(sys.argv[0])
         if scriptdir in sys.path:
             sys.path.remove(scriptdir)
-        sys.path.insert(0, '.')
+        sys.path.insert(0, '')
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'gk:p:w')
