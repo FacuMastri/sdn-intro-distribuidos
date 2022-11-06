@@ -26,6 +26,16 @@ According to [Mininet documentation](http://mininet.org/download/), you can inst
     sudo apt update
     sudo apt install mininet
 
+### Pox
+
+[Pox](https://github.com/noxrepo/pox) is already imported in this repository. We are actually using the _gar-experimental_ release which
+is the latest stable version supporting Python 3. If you encounter any issues, you can try using the _fangtooth_ release which
+supports Python 2.
+
+### Iperf
+
+[Iperf](https://iperf.fr/) comes pre-installed on Ubuntu or any Debian-based distribution.
+
 ### Testing installation
 
 Once you have all the dependencies and the Mininet package installed you can test your installation by running the following command:
@@ -35,3 +45,4 @@ Once you have all the dependencies and the Mininet package installed you can tes
 And on a separate terminal:
 
     sudo mn --custom ./src/test-loop.py --topo mytopo --arp --mac --switch ovsk --controller remote --test pingall
+
