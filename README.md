@@ -25,3 +25,13 @@ According to [Mininet documentation](http://mininet.org/download/), you can inst
 
     sudo apt update
     sudo apt install mininet
+
+### Testing installation
+
+Once you have all the dependencies and the Mininet package installed you can test your installation by running the following command:
+
+    pox/pox.py samples.spanning_tree
+
+And on a separate terminal:
+
+    sudo mn --custom ./src/test-loop.py --topo mytopo --arp --mac --switch ovsk --controller remote --test pingall
