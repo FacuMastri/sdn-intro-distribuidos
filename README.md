@@ -46,3 +46,18 @@ And on a separate terminal:
 
     sudo mn --custom ./src/test-loop.py --topo mytopo --arp --mac --switch ovsk --controller remote --test pingall
 
+## Running the topology
+
+To run the topology, you need to run the following commands:
+
+First, you need to start the controller:
+
+    ./pox/pox.py log.level --DEBUG openflow.of_01 forwarding.l2_learning
+
+Then, on a separate terminal, you need to start the topology:
+
+    sudo python3 ./src/topology.py --switches=4
+
+At this point, you should be able to see the topology running on Mininet. `pingall` on the mininet CLI should run 
+successfully.
+
