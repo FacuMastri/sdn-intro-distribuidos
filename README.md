@@ -36,28 +36,18 @@ supports Python 2.
 
 [Iperf](https://iperf.fr/) comes pre-installed on Ubuntu or any Debian-based distribution.
 
-### Testing installation
-
-Once you have all the dependencies and the Mininet package installed you can test your installation by running the following command:
-
-    pox/pox.py samples.spanning_tree
-
-And on a separate terminal:
-
-    sudo mn --custom ./src/test-loop.py --topo mytopo --arp --mac --switch ovsk --controller remote --test pingall
-
 ## Running the topology
 
-To run the topology, you need to run the following commands:
+To run the topology, run the following commands:
 
-First, you need to start the controller:
+First, start the controller:
 
-    ./pox/pox.py log.level --DEBUG openflow.of_01 forwarding.l2_learning
+    ./pox/pox.py log.level --DEBUG log.color openflow.of_01 forwarding.l2_learning 
 
-Then, on a separate terminal, you need to start the topology:
+Then, on a separate terminal, start the topology:
 
-    sudo python3 ./src/topology.py --switches=4
+    sudo mn --custom ./src/topology.py --topo topologia,n_switches=3 --arp --mac --switch ovsk --controller remote
 
-At this point, you should be able to see the topology running on Mininet. `pingall` on the mininet CLI should run 
+At this point, you should be able to see the topology running on Mininet. `n_switches` refers to the number of switches. `pingall` on the mininet CLI should run 
 successfully.
 
