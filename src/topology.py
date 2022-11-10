@@ -17,7 +17,7 @@ class Topology(Topo):
             self.addLink(switches[i], switches[i + 1])
 
         # Conectamos los hosts a los switches, donde el h1 y h2 se conectan al s1, h3 y h4 al sN
-        # (donde N es el último switch)
+        # (donde N es el ultimo switch)
         self.addLink(hosts[0], switches[0])
         self.addLink(hosts[1], switches[0])
         self.addLink(hosts[2], switches[-1])
