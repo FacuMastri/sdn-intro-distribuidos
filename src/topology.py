@@ -9,12 +9,12 @@ class Topology(Topo):
 
         print("Starting Topology with %s switches" % (n_switches))
         hosts = []
-        
+
         # Necesitamos 4 hosts (los 2 de cada extremo)
         for i in range(1, 5):
             print("Adding host: host_%s" % (i))
-            hosts.append(self.addHost("host_%s" % i, ip="10.0.0.%s" % i))
-        
+            hosts.append(self.addHost("host_%s" % i))
+
         # Agregamos los switches, pero no los conectamos todavia
         switches = []
         for i in range(1, n_switches + 1):
@@ -23,7 +23,7 @@ class Topology(Topo):
 
         # Conectamos los switches entre si
         for i in range(n_switches - 1):
-            print("Adding link between: switch_{} and switch_{}".format(i, i+1))
+            print("Adding link between: switch_{} and switch_{}".format(i, i + 1))
             self.addLink(switches[i], switches[i + 1])
 
         # Conectamos los hosts a los switches, donde el h1 y h2 se conectan al s1, h3 y h4 al sN
