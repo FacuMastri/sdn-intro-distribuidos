@@ -42,7 +42,7 @@ To run the topology, run the following commands:
 
 First, start the controller:
 
-    ./pox/pox.py log.level --DEBUG log.color openflow.of_01 forwarding.l2_learning 
+    ./pox.py log.level --DEBUG log.color openflow.of_01 forwarding.l2_learning
 
 Then, on a separate terminal, start the topology:
 
