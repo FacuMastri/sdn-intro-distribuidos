@@ -1,0 +1,31 @@
+{
+    "rules": [
+        {
+            "name": "pto_1",
+            "protocol" : "tcp",
+            "dst_port": 80
+        },
+        {
+            "name": "pto_1",
+            "protocol": "udp",
+            "dst_port": 80
+        },
+        {
+            "name": "pto_2",
+            "ip": "ipv4",
+            "protocol": "udp",
+            "src_ip": "10.0.0.1",
+            "dst_port": 5001
+        },
+        {
+            "name": "pto_3",
+            "src_mac": "00:00:00:00:00:01",
+            "dst_mac": "00:00:00:00:00:03"
+        },
+        {
+            "name": "pto_3",
+            "src_mac": "00:00:00:00:00:03",
+            "dst_mac": "00:00:00:00:00:01"
+        }
+    ]
+}
