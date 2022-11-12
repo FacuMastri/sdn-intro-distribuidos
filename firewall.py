@@ -18,8 +18,10 @@ class Firewall(EventMixin):
         log.debug("Enabling Firewall Module")
 
     def _handle_ConnectionUp(self, event):
-        self.drop_packet_on_port(event, 80)
-        log.debug("Firewall rules installed on %s", dpidToStr(event.dpid))
+        # Instalamos el firewall en el primer switch
+        if event.dpid == 1:
+            self.drop_packet_on_port(event, 80)
+            log.debug("Firewall rules installed on %s", dpidToStr(event.dpid))
 
     def drop_packet_on_port(self, event, port):
         """
