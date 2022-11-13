@@ -7,10 +7,12 @@ from pox.lib.packet.ipv4 import ipv4
 from pox.lib.addresses import EthAddr
 import json
 
+
 def parse_json(path):
     with open(path) as file:
         data = json.load(file)
     return data
+
 
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
@@ -30,41 +32,54 @@ class Firewall(EventMixin):
                 if rule["name"] == "pto_1":
                     self.drop_packet_on_port(event, rule["protocol"], rule["dst_port"])
                 elif rule["name"] == "pto_2":
-                    self.drop_packet_on_port_and_ip_udp(
-                        event, rule["dst_port"], rule["src_ip"]
+                    self.drop_packet_on_port_and_ip(
+                        event, rule["dst_port"], rule["src_ip"], rule["protocol"]
                     )
                 elif rule["name"] == "pto_3":
                     self.drop_packet_between_hosts(
                         event, rule["src_mac"], rule["dst_mac"]
                     )
-            log.debug("Firewall rules installed on %s - switch %i", dpidToStr(event.dpid), topo_switch_id)
+            log.debug(
+                "Firewall rules installed on %s - switch %i",
+                dpidToStr(event.dpid),
+                topo_switch_id,
+            )
 
     def drop_packet_on_port(self, event, protocol, dst_port):
         """
         Se deben descartar todos los mensajes cuyo puerto de destino sea 80
         """
         msg = of.ofp_flow_mod()
+        self._add_dst_port(msg, dst_port, protocol)
+        event.connection.send(msg)
+        log.debug(
+            "Rule installed: dropping packets on dst_port %i and %s",
+            dst_port,
+            protocol.upper(),
+        )
+
+    def drop_packet_on_port_and_ip(self, event, dst_port, src_ip, protocol):
+        """
+        Se deben descartar todos los mensajes que provengan del host 1, tengan como puerto destino el 5001, y esten
+        utilizando el protocolo UDP.
+        """
+        msg = of.ofp_flow_mod()
+        msg.match.nw_src = src_ip
+        self._add_dst_port(msg, dst_port, protocol)
+        event.connection.send(msg)
+        log.debug(
+            "Rule installed: dropping packets from host IP %s, dst_port %i and UDP",
+            src_ip,
+            dst_port,
+        )
+
+    def _add_dst_port(self, msg, dst_port, protocol):
         msg.match.tp_dst = dst_port
         msg.match.dl_type = ethernet.IP_TYPE
         if protocol == "tcp":
             msg.match.nw_proto = ipv4.TCP_PROTOCOL
         else:
             msg.match.nw_proto = ipv4.UDP_PROTOCOL
-        event.connection.send(msg)
-        log.debug("Rule installed: dropping packets on dst_port %i and %s", dst_port, protocol.upper())
-
-    def drop_packet_on_port_and_ip_udp(self, event, dst_port, src_ip):
-        """
-        Se deben descartar todos los mensajes que provengan del host 1, tengan como puerto destino el 5001, y esten
-        utilizando el protocolo UDP.
-        """
-        msg = of.ofp_flow_mod()
-        msg.match.tp_dst = dst_port
-        msg.match.dl_type = ethernet.IP_TYPE
-        msg.match.nw_proto = ipv4.UDP_PROTOCOL
-        msg.match.nw_src = src_ip
-        event.connection.send(msg)
-        log.debug("Rule installed: dropping packets from host IP %s, dst_port %i and UDP", src_ip, dst_port)
 
     def drop_packet_between_hosts(self, event, src_mac, dst_mac):
         """
@@ -74,7 +89,11 @@ class Firewall(EventMixin):
         msg.match.dl_src = EthAddr(src_mac)
         msg.match.dl_dst = EthAddr(dst_mac)
         event.connection.send(msg)
-        log.debug("Rule installed: dropping packets from host MAC %s to host MAC %s", src_mac, dst_mac)
+        log.debug(
+            "Rule installed: dropping packets from host MAC %s to host MAC %s",
+            src_mac,
+            dst_mac,
+        )
 
 
 def launch(rules_path, switch_id=1):

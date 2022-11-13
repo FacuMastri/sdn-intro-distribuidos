@@ -42,7 +42,7 @@ To run the topology, run the following commands:
 
 First:
 
-    chmod +x ./scripts/
+    chmod +x ./scripts/*
 
 Then, start the controller:
 
