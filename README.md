@@ -40,14 +40,18 @@ supports Python 2.
 
 To run the topology, run the following commands:
 
-First, start the controller:
+First:
 
-    ./pox.py log.level --DEBUG log.color openflow.of_01 forwarding.l2_learning firewall --rules_path=rules.json --switch_id=1
+    chmod +x ./scripts/
 
-Then, on a separate terminal, start the topology:
+Then, start the controller:
+
+    ./scripts/start-firewall-with-rules.sh
+
+Finally, on a separate terminal, start the topology:
 
     ./scripts/start-topo.sh 2
 
-At this point, you should be able to see the topology running on Mininet. `n_switches` refers to the number of switches. `pingall` on the mininet CLI should run 
+At this point, you should be able to see the topology running on Mininet. The first parameter refers to the number of switches. `pingall` on the mininet CLI should run 
 successfully.
 
