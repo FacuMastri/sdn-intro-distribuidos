@@ -46,7 +46,7 @@ First, start the controller:
 
 Then, on a separate terminal, start the topology:
 
-    sudo mn --custom ./src/topology.py --topo topologia,n_switches=3 --arp --mac --switch ovsk --controller remote
+    ./scripts/start-topo.sh 2
 
 At this point, you should be able to see the topology running on Mininet. `n_switches` refers to the number of switches. `pingall` on the mininet CLI should run 
 successfully.

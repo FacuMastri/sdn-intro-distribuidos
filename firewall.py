@@ -14,7 +14,7 @@ def parse_json():
 
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
-switch_id = 1
+topo_switch_id = 1
 
 
 class Firewall(EventMixin):
@@ -78,10 +78,10 @@ class Firewall(EventMixin):
         log.debug("Rule installed: dropping packets from host MAC %s to host MAC %s", src_mac, dst_mac)
 
 
-def launch(s_id=1):
-    if int(s_id) < 1:
+def launch(switch_id=1):
+    if int(switch_id) < 1:
         log.error("Invalid switch id")
         exit(-1)
-    global switch_id
-    switch_id = int(s_id)
+    global topo_switch_id
+    topo_switch_id = int(switch_id)
     core.registerNew(Firewall)
