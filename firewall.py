@@ -7,27 +7,26 @@ from pox.lib.packet.ipv4 import ipv4
 from pox.lib.addresses import EthAddr
 import json
 
-def parse_json():
-    with open("rules.json") as data_file:
-        data = json.load(data_file)
+def parse_json(path):
+    with open(path) as file:
+        data = json.load(file)
     return data
 
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
 topo_switch_id = 1
+rules = None
 
 
 class Firewall(EventMixin):
     def __init__(self):
         self.listenTo(core.openflow)
         log.debug("Enabling Firewall Module")
-        self.rules = parse_json()
-        log.debug("Rules loaded:\n" + str(self.rules))
 
     def _handle_ConnectionUp(self, event):
         # Instalamos el firewall en el primer switch
-        if event.dpid == switch_id:
-            for rule in self.rules["rules"]:
+        if event.dpid == topo_switch_id:
+            for rule in rules["rules"]:
                 if rule["name"] == "pto_1":
                     self.drop_packet_on_port(event, rule["protocol"], rule["dst_port"])
                 elif rule["name"] == "pto_2":
@@ -38,7 +37,7 @@ class Firewall(EventMixin):
                     self.drop_packet_between_hosts(
                         event, rule["src_mac"], rule["dst_mac"]
                     )
-            log.debug("Firewall rules installed on %s - switch %i", dpidToStr(event.dpid), switch_id)
+            log.debug("Firewall rules installed on %s - switch %i", dpidToStr(event.dpid), topo_switch_id)
 
     def drop_packet_on_port(self, event, protocol, dst_port):
         """
@@ -78,10 +77,14 @@ class Firewall(EventMixin):
         log.debug("Rule installed: dropping packets from host MAC %s to host MAC %s", src_mac, dst_mac)
 
 
-def launch(switch_id=1):
+def launch(rules_path, switch_id=1):
     if int(switch_id) < 1:
         log.error("Invalid switch id")
         exit(-1)
     global topo_switch_id
+    global rules
+    data = parse_json(rules_path)
+    rules = data
+    log.debug("Rules loaded:\n" + str(rules))
     topo_switch_id = int(switch_id)
     core.registerNew(Firewall)
