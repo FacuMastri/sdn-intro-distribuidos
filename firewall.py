@@ -9,10 +9,13 @@ import json
 
 
 def parse_json(path):
-    with open(path) as file:
-        data = json.load(file)
-    return data
-
+    try:
+        with open(path) as file:
+            data = json.load(file)
+        return data
+    except Exception:
+        log.error("Exception while parsing json file")
+        exit(-1)
 
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
