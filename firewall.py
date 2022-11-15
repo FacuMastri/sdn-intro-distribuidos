@@ -32,14 +32,31 @@ class Firewall(EventMixin):
     def _handle_ConnectionUp(self, event):
         if event.dpid == topo_switch_id:
             for rule in rules["rules"]:
-                msg = of.ofp_flow_mod()
-                self.add_rule(msg, rule)
-                event.connection.send(msg)
+                # msg = of.ofp_flow_mod()
+                # self.add_rule(msg, rule)
+                # event.connection.send(msg)
+                self.apply_rule(event, **rule)
             log.debug(
                 "Firewall rules installed on %s - switch %i",
                 dpidToStr(event.dpid),
                 topo_switch_id,
             )
+
+    def apply_rule(self, event, **kwargs):
+        msg = of.ofp_flow_mod()
+        msg.match.nw_src = kwargs.get("src_ip", None)
+        msg.match.nw_dst = kwargs.get("dst_ip", None)
+        msg.match.tp_src = kwargs.get("src_port", None)
+        msg.match.tp_dst = kwargs.get("dst_port", None)
+        if kwargs.get("src_mac", None) is not None:
+            msg.match.dl_src = EthAddr(kwargs["src_mac"])
+        if kwargs.get("dst_mac", None) is not None:
+            msg.match.dl_dst = EthAddr(kwargs["dst_mac"])
+        if kwargs.get("protocol", None) == "tcp":
+            msg.match.nw_proto = ipv4.TCP_PROTOCOL
+        if kwargs.get("protocol", None) == "udp":
+            msg.match.nw_proto = ipv4.UDP_PROTOCOL
+        event.connection.send(msg)
 
     def add_rule(self, msg, rule):
         if "tcp" in rule:
