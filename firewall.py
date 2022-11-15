@@ -17,7 +17,7 @@ def parse_json(path):
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
 topo_switch_id = 1
-rules = None
+rules = {"rules": []}
 
 
 class Firewall(EventMixin):
@@ -26,74 +26,78 @@ class Firewall(EventMixin):
         log.debug("Enabling Firewall Module")
 
     def _handle_ConnectionUp(self, event):
-        # Instalamos el firewall en el primer switch
         if event.dpid == topo_switch_id:
             for rule in rules["rules"]:
-                if rule["name"] == "pto_1":
-                    self.drop_packet_on_port(event, rule["protocol"], rule["dst_port"])
-                elif rule["name"] == "pto_2":
-                    self.drop_packet_on_port_and_ip(
-                        event, rule["dst_port"], rule["src_ip"], rule["protocol"]
-                    )
-                elif rule["name"] == "pto_3":
-                    self.drop_packet_between_hosts(
-                        event, rule["src_mac"], rule["dst_mac"]
-                    )
+                msg = of.ofp_flow_mod()
+                self.add_rule(msg, rule)
+                event.connection.send(msg)
             log.debug(
                 "Firewall rules installed on %s - switch %i",
                 dpidToStr(event.dpid),
                 topo_switch_id,
             )
 
-    def drop_packet_on_port(self, event, protocol, dst_port):
-        """
-        Se deben descartar todos los mensajes cuyo puerto de destino sea 80
-        """
-        msg = of.ofp_flow_mod()
-        self._add_dst_port(msg, dst_port, protocol)
-        event.connection.send(msg)
-        log.debug(
-            "Rule installed: dropping packets on dst_port %i and %s",
-            dst_port,
-            protocol.upper(),
-        )
+    def add_rule(self, msg, rule):
+        if "tcp" in rule:
+            self.add_tcp_rule(rule["tcp"], msg)
+        if "udp" in rule:
+            self.add_udp_rule(rule["udp"], msg)
+        if "ip" in rule:
+            self.add_ip_rule(rule["ip"], msg)
+        if "mac" in rule:
+            self.add_mac_rule(rule["mac"], msg)
 
-    def drop_packet_on_port_and_ip(self, event, dst_port, src_ip, protocol):
-        """
-        Se deben descartar todos los mensajes que provengan del host 1, tengan como puerto destino el 5001, y esten
-        utilizando el protocolo UDP.
-        """
-        msg = of.ofp_flow_mod()
-        msg.match.nw_src = src_ip
-        self._add_dst_port(msg, dst_port, protocol)
-        event.connection.send(msg)
-        log.debug(
-            "Rule installed: dropping packets from host IP %s, dst_port %i and UDP",
-            src_ip,
-            dst_port,
-        )
-
-    def _add_dst_port(self, msg, dst_port, protocol):
-        msg.match.tp_dst = dst_port
+    def add_tcp_rule(self, rule, msg):
         msg.match.dl_type = ethernet.IP_TYPE
-        if protocol == "tcp":
-            msg.match.nw_proto = ipv4.TCP_PROTOCOL
-        else:
-            msg.match.nw_proto = ipv4.UDP_PROTOCOL
+        msg.match.nw_proto = ipv4.TCP_PROTOCOL
+        if "src_port" in rule:
+            msg.match.tp_src = rule["src_port"]
+            log.debug(
+                "Rule installed: dropping packet TCP to port %i", rule["src_port"]
+            )
+        if "dst_port" in rule:
+            msg.match.tp_dst = rule["dst_port"]
+            log.debug(
+                "Rule installed: dropping packet TCP to port %i", rule["dst_port"]
+            )
 
-    def drop_packet_between_hosts(self, event, src_mac, dst_mac):
-        """
-        Se debe elegir dos hosts cualquiera, y los mismos no deben poder comunicarse de ninguna forma.
-        """
-        msg = of.ofp_flow_mod()
-        msg.match.dl_src = EthAddr(src_mac)
-        msg.match.dl_dst = EthAddr(dst_mac)
-        event.connection.send(msg)
-        log.debug(
-            "Rule installed: dropping packets from host MAC %s to host MAC %s",
-            src_mac,
-            dst_mac,
-        )
+    def add_udp_rule(self, rule, msg):
+        msg.match.dl_type = ethernet.IP_TYPE
+        msg.match.nw_proto = ipv4.UDP_PROTOCOL
+        if "src_port" in rule:
+            msg.match.tp_src = rule["src_port"]
+            log.debug(
+                "Rule installed: dropping packet UDP to port %i", rule["src_port"]
+            )
+        if "dst_port" in rule:
+            msg.match.tp_dst = rule["dst_port"]
+            log.debug(
+                "Rule installed: dropping packet UDP to port %i", rule["dst_port"]
+            )
+
+    def add_ip_rule(self, rule, msg):
+        msg.match.dl_type = ethernet.IP_TYPE
+        if "src_ip" in rule:
+            msg.match.nw_src = rule["src_ip"]
+            log.debug(
+                "Rule installed: dropping packet from IP address %s", rule["src_ip"]
+            )
+        if "dst_ip" in rule:
+            msg.match.nw_dst = rule["dst_ip"]
+            log.debug(
+                "Rule installed: dropping packet to IP address %s", rule["dst_ip"]
+            )
+
+    def add_mac_rule(self, rule, msg):
+        if "src_mac" in rule:
+            msg.match.dl_src = EthAddr(rule["src_mac"])
+            log.debug("Rule installed: dropping packet from MAC %s", rule["src_mac"])
+        if "dst_mac" in rule:
+            msg.match.dl_dst = EthAddr(rule["dst_mac"])
+            log.debug("Rule installed: dropping packet to MAC %s", rule["dst_mac"])
+
+    def _handle_PacketIn(self, event):
+        pass
 
 
 def launch(rules_path, switch_id=1):
