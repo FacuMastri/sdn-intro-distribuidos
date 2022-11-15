@@ -17,6 +17,7 @@ def parse_json(path):
         log.error("Exception while parsing json file")
         exit(-1)
 
+
 log = core.getLogger()
 # Por defecto, tomamos que al switch al cual se le van a aplicar las reglas es el 1
 topo_switch_id = 1
