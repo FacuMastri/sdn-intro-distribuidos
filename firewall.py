@@ -32,15 +32,16 @@ class Firewall(EventMixin):
     def _handle_ConnectionUp(self, event):
         if event.dpid == topo_switch_id:
             for rule in rules["rules"]:
-                self.apply_rule(event, rule)
+                msg = of.ofp_flow_mod()
+                self.apply_rule(event, msg, rule)
+                event.connection.send(msg)
             log.debug(
                 "Firewall rules installed on %s - switch %i",
                 dpidToStr(event.dpid),
                 topo_switch_id,
             )
 
-    def apply_rule(self, event, rule):
-        msg = of.ofp_flow_mod()
+    def apply_rule(self, event, msg, rule):
         msg.match.dl_type = ethernet.IP_TYPE
         if "src_ip" in rule:
             log.debug(
@@ -70,7 +71,6 @@ class Firewall(EventMixin):
         if rule.get("protocol", None) == "udp":
             log.debug("Rule installed: dropping packet over UDP")
             msg.match.nw_proto = ipv4.UDP_PROTOCOL
-        event.connection.send(msg)
 
     def _handle_PacketIn(self, event):
         pass
