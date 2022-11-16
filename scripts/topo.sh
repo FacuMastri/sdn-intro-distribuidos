@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Start the topology
-# Usage: start-topo.sh <number-of-switches>
+# Usage: topo.sh <number-of-switches>
 
 N_SWITCHES=$1
 

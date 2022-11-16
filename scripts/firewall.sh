@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Start the firewall
-# Usage: start-firewall.sh <switch-id> <rules-path>
+# Usage: firewall.sh <switch-id> <rules-path>
 
 SWITCH_ID=$1
 RULES_PATH=$2
