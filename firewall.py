@@ -53,14 +53,10 @@ class Firewall(EventMixin):
             )
             msg.match.nw_dst = rule["dst_ip"]
         if "src_port" in rule:
-            log.debug(
-                "Rule installed: dropping packet from port %i", rule["src_port"]
-            )
+            log.debug("Rule installed: dropping packet from port %i", rule["src_port"])
             msg.match.tp_src = rule["src_port"]
         if "dst_port" in rule:
-            log.debug(
-                "Rule installed: dropping packet to port %i", rule["dst_port"]
-            )
+            log.debug("Rule installed: dropping packet to port %i", rule["dst_port"])
             msg.match.tp_dst = rule["dst_port"]
         if "src_mac" in rule:
             log.debug("Rule installed: dropping packet from MAC %s", rule["src_mac"])
