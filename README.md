@@ -1,57 +1,69 @@
-## Dependencies
+# Trabajo Práctico 2: Software-Defined Networks
 
-Creating virtual environment
+## Dependencias
+
+Creando entorno virtual:
 
     python3 -m venv venv
 
-Activating virtual environment
+Activando el entorno virtual:
 
     source venv/bin/activate
 
-You can confirm you’re in the virtual environment by checking the location of your Python interpreter:
+Se puede confirmar si el entorno virtual está activado con el comando:
 
     which python
 
-As long as your virtual environment is activated `pip` will install packages into that specific environment, and you’ll be able
-to import and use packages in your Python application.
+Mientras se esté trabajando en el entorno virtual, `pip` va a instalar las dependencias de Python en el directorio `venv`,
+y se podrán usar e importar en los scripts de Python.
 
-Installing dependencies from requirements.txt
-    
+Instalando dependencias desde `requirements.txt`:
+
     python3 -m pip install -r requirements.txt
+
 
 ### Mininet
 
-According to [Mininet documentation](http://mininet.org/download/), you can install Mininet by running the following commands:
+De acuerdo a la [documentación de Mininet](http://mininet.org/download/), se puede instalar Mininet corriendo los siguientes comandos:
 
     sudo apt update
     sudo apt install mininet
 
 ### Pox
 
-[Pox](https://github.com/noxrepo/pox) is already imported in this repository. We are actually using the _gar-experimental_ release which
-is the latest stable version supporting Python 3. If you encounter any issues, you can try using the _fangtooth_ release which
-supports Python 2.
+[Pox](https://github.com/noxrepo/pox) se encuentra incluido en este repositorio. Actualmente, estamos usando el release de  _gar-experimental_
+el cual es la última versión estable que soporta Python 3. Si se encuentra algún inconveniente, se puede intentar usar el release de _fangtooth_.
+que soporta Python 2.
 
 ### Iperf
 
-[Iperf](https://iperf.fr/) comes pre-installed on Ubuntu or any Debian-based distribution.
+[Iperf](https://iperf.fr/) viene preinstalado en Ubuntu o en cualquiera distribución de Linux basada en Debian.
 
-## Running the topology
+### Xterm
 
-To run the topology, run the following commands:
+Xterm sirve para poder abrir una terminal dentro de un host de Mininet. Se puede instalar con el siguiente comando:
 
-First:
+    sudo apt install xterm
+
+
+## Ejecutando la topología
+
+Para ejecutar la topología, se debe ejecutar los siguientes comandos:
+
+Primero:
 
     chmod +x ./scripts/*
 
-Then, start the controller:
+Luego, levantar el controlador:
 
-    ./scripts/start-firewall-with-rules.sh
+    ./scripts/firewall-with-rules.sh
 
-Finally, on a separate terminal, start the topology:
+Finalmente, en una terminal diferente, ejecutar la topología:
 
-    ./scripts/start-topo.sh 2
+    ./scripts/topo.sh 2
 
-At this point, you should be able to see the topology running on Mininet. The first parameter refers to the number of switches. `pingall` on the mininet CLI should run 
-successfully.
+En este punto, se debe poder ver la topología corriendo dentro de Mininet. El primer parámetro de 
+`topo.sh` es la cantidad de switches que se quieren utilizar.
+
+## Scripts y pruebas
 
