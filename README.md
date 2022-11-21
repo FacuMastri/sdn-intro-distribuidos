@@ -67,3 +67,14 @@ En este punto, se debe poder ver la topología corriendo dentro de Mininet. El p
 
 ## Scripts y pruebas
 
+Para levantar las terminales de los nodos:
+
+    xterm host_1 host_4
+
+Para levantar un servidor en el puerto <port> con TCP:
+
+    iperf -s -p <port>
+
+Para levantar un cliente: 
+
+    iperf -c 10.0.0.4 -p <port>
